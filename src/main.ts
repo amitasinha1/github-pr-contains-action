@@ -21,6 +21,7 @@ async function run() {
         }
 
 	const diffContains = core.getInput('diffContains')
+	const diffDoesNotContains = core.getInput('diffDoesNotContains')
 	const diff_url = context.payload.pull_request.diff_url
 	const result = await github.request( diff_url )
 	const files = parse(result.data)
@@ -45,6 +46,8 @@ async function run() {
 	})
 	if ( changes.indexOf( diffContains ) < 0 ) {
             core.setFailed( "The added code does not contain " + diffContains);
+	} else if ( changes.index( diffDoesNotContains ) >= 0 ) {
+	    core.setFailed( "The added code contains " + diffContains);
 	} else {
             core.exportVariable('diff',changes )
             core.setOutput('diff',changes )
